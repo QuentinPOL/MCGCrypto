@@ -5,19 +5,15 @@
 
 <!doctype html>
 <html lang="fr">
-  <head>
-  	<title> Connexion </title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  	<head>
+		<title> Connexion </title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
-
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-	
-	<link rel="stylesheet" href="css/login.css">
-
+		<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="css/login.css">
 	</head>
-
 	
 	<body class="img js-fullheight" style="background-image: url(images/bg.jpg);">
 
@@ -25,13 +21,11 @@
     <header class="header_section">
 		<div class="container-fluid">
 		  <nav class="navbar navbar-expand-lg custom_nav-container ">
-			<a class="navbar-brand" href="index.html">
+			<a class="navbar-brand" href="index.php">
 			  <span>
 				MCGCrypto
 			  </span>
 			</a>
-
-  
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 			  <ul class="navbar-nav ml-auto lead">
 				<li class="nav-item active">
@@ -59,14 +53,14 @@
 		      	<h3 class="mb-4 text-center">Non inscrit ?</h3>
 		      	<form action="#" class="signin-form">
 		      		<div class="form-group">
-		      			<input type="text" class="form-control" placeholder="Email" required>
+		      			<input type="text" name="inputEmail" class="form-control" placeholder="Email" required>
 		      		</div>
 	            <div class="form-group">
-	              <input id="password-field" type="password" class="form-control" placeholder="Mot de passe" required>
+	              <input id="password-field" name="inputPassword" type="password" class="form-control" placeholder="Mot de passe" required>
 	              <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
 	            </div>
 	            <div class="form-group">
-	            	<button type="submit" class="form-control btn btn-primary submit px-3">S'inscrire</button>
+	            	<button type="submit" name="btnSignUp" class="form-control btn btn-primary submit px-3">S'inscrire</button>
 	            </div>
 	          </form>
 	          <p class="w-100 text-center">&mdash; Déjà inscrit ? &mdash;</p>

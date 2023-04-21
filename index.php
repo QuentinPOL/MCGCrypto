@@ -106,7 +106,7 @@ session_start();
                 </div>
                 <div class="col-md-6">
                   <div class="img-box">
-                    <img src="images/slider-img.png" alt="">
+                    <img src="images/geforce-rtx-4090-product-photo-002.png" alt="">
                   </div>
                 </div>
               </div>
