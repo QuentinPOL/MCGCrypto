@@ -1,70 +1,51 @@
 <?php
-  session_start();
-  include("pdo.php");
-  include("class.php");
+    include("class.php");
 
-  $current_url = $_SERVER['REQUEST_URI']; // On recup la page
-  $user = new User(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+    $current_url = $_SERVER['REQUEST_URI']; // Récupérer le nom du fichier
+    $theUser = new User(NULL, NULL, NULL); // Définition de l'utilsateur à NULL
 
-
-        $inscrit = 0;
-
-        if (isset($_POST["inscrireDocteur"])) // Si il appuis le bouton inscrire en tant que Docteur
-        {
-          if (!(isset($_SESSION["IsConnecting"]))) // Si il est pas connecter
-          {
-           $user = new User(NULL, $_POST["drone"], $_POST["NomDocteur"], $_POST["PrenomDocteur"], $_POST["DateBornDocteur"], $_POST["TelDocteur"], $_POST["MailDocteur"], $_POST["PwdDocteur"], "Medecin");
-          }
-      
-          $inscrit = $user->__construct(NULL, $_POST["drone"], $_POST["NomDocteur"], $_POST["PrenomDocteur"], $_POST["DateBornDocteur"], $_POST["TelDocteur"], $_POST["MailDocteur"], $_POST["PwdDocteur"], "Medecin");
-        
-          header('Refresh:0;url=test.php',true,303); // Changer par include
-        }
-        else if (isset($_POST["inscrirePatient"])) // Si il appuis le bouton inscrire en tant que Patient
-        {
-          if (!(isset($_SESSION["IsConnecting"]))) // Si il est pas connecter
-          {
-            $user = new User($_POST["NumSS"], $_POST["drone"], $_POST["NomPatient"], $_POST["PrenomPatient"], $_POST["DateBornPatient"], $_POST["TelPatient"], $_POST["MailPatient"], $_POST["PwdPatient"], "Patient");
-          }
-      
-          $inscrit = $user->__construct($_POST["NumSS"], $_POST["drone"], $_POST["NomPatient"], $_POST["PrenomPatient"], $_POST["DateBornPatient"], $_POST["TelPatient"], $_POST["MailPatient"], $_POST["PwdPatient"], "Patient");
-        }
-      
-        if ($inscrit == 1) // Si l'inscription est réussi
-        {
-          header('Refresh:0;url=connexion.php',true,303);
-        }   
-
-    
-    if (strpos($current_url, '/connexion.php') !== false) // Si page de connexion
+    if (strpos($current_url, '/inscription.php') !== false) // Si page inscription
     {
-        $connexion = 0;
+        $isSignUp = -1; // Définition de l'inscriptioon
 
-        if (isset($_POST["ConnexionDocteur"])) // Si il appuis le bouton connexion en tant que Docteur
+        if (isset($_POST["btnSignUp"])) // Si il appuis le bouton inscrire en tant que Docteur
         {
           if (!(isset($_SESSION["IsConnecting"]))) // Si il est pas connecter
           {
-            if ($user->onConnect($_POST["EmailDocteur"], $_POST["PwdDocteur"], "medecin") == 1)
-            {
-              $_SESSION["IsConnecting"] = true;
-              $_SESSION["Login"] = $_POST["EmailDocteur"]; // Tableau de session Login = login de l'utilsateur
-              $_SESSION["IsType"] = "medecin";
-      
-              header("Location: consultation.php");
-            }
+            $theUser = new User($_POST["inputNom"], $_POST["inputEmail"], $_POST["inputPassword"]);
           }
         }
-        else if (isset($_POST["ConnexionPatient"])) // Si il appuis le bouton connexion en tant que Patient
+
+        if ($theUser->creationSucceeded() == 1) // Création réussi
+        {
+          $_SESSION["IsConnecting"] = true;
+          $_SESSION["Login"] = $_POST["inputNom"]; // Tableau de session Login = login de l'utilsateur
+
+          readfile("index.php");
+        }
+        else if ($theUser->creationSucceeded() == 2) // Compte existe déjà
+        {
+            $isSignUp = 2;
+        }
+        else // Erreur
+        {
+            $isSignUp = 0;
+        }
+    }
+    else if (strpos($current_url, '/login.php') !== false) // Si page connexion
+    {
+        $statusConnect = -1; // Définition de la connexion
+
+        if (isset($_POST["btnConnecting"])) // Si il appuis le bouton connexion
         {
           if (!(isset($_SESSION["IsConnecting"]))) // Si il est pas connecter
           {
-            if ($user->onConnect($_POST["EmailPatient"], $_POST["PwdPatient"], "patient") == 1)
+            $statusConnect = $theUser->onConnect($_POST["inputEmail"], $_POST["inputPassword"]);
+    
+            if ($statusConnect == 1)
             {
               $_SESSION["IsConnecting"] = true;
-              $_SESSION["Login"] = $_POST["EmailPatient"]; // Tableau de session Login = login de l'utilsateur
-              $_SESSION["IsType"] = "patient";
-      
-              header("Location: consultation.php");
+              readfile("index.php");
             }
           }
         }

@@ -1,6 +1,6 @@
 <?php
   session_start();
-  include("forms/session.php");
+  include("classes/session.php");
 ?>
 
 <!doctype html>
@@ -55,13 +55,13 @@
 		      		<div class="form-group">
 		      			<input type="text" name="inputEmail" class="form-control" placeholder="Email" required>
 		      		</div>
-	            <div class="form-group">
-	              <input id="password-field" name="inputPassword" type="password" class="form-control" placeholder="Mot de passe" required>
-	              <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
-	            </div>
-	            <div class="form-group">
-	            	<button type="submit" name="btnConnecting" class="form-control btn btn-primary submit px-3">Se connecter</button>
-	            </div>
+					<div class="form-group">
+						<input id="password-field" name="inputPassword" type="password" class="form-control" placeholder="Mot de passe" required>
+						<span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+					</div>
+					<div class="form-group">
+						<button type="submit" name="btnConnecting" class="form-control btn btn-primary submit px-3">Se connecter</button>
+					</div>
 	          </form>
 	          <p class="w-100 text-center">&mdash; Pas inscrit ? &mdash;</p>
 	          <div class="social d-flex text-center">

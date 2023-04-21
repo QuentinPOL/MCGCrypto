@@ -98,7 +98,7 @@ session_start();
                       Bienvenue sur notre site qui va vous permettre de vous lancer dans le milieu de l'investissement financier, vous allez enfin pourvoir devenir libre financièrement et arrêter de vous soucier des problèmes de la vie !
                     </p>
                     <div class="btn-box">
-                      <a href="" class="btn1">
+                      <a href="about.php" class="btn1">
                         Voir plus
                       </a>
                     </div>

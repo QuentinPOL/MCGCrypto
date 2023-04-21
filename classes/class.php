@@ -1,115 +1,117 @@
 <?php
-session_start();
-include("pdo.php");
+    include("pdo.php"); // Base de donnée
 
-    class User {
-        // Propriété(s)
-        private $numSS;
-        private $civilite; 
+    class User // Utilisateur(s) du site
+    {
+        // Attribut(s)
         private $nom;
-        private $prenom; 
-        private $datenaissance; 
-        private $telephone; 
-        private $email; 
-        private $motdepasse; 
-        private $type;
-    
+        private $email;
+        private $creationSucceeded;
+
         // Constructeur
-        public function __construct($numSS, $civilite, $nom, $prenom, $datenaissance, $telephone, $email, $motdepasse, $type)
+        public function __construct($nom, $email, $motdepasse)
         {
-            if ($GLOBALS["pdo"]) // Si la connexion à la bdd est réussi
+            $insert = null;
+            $this->creationSucceeded = -1; // par défaut, la création échoue
+    
+            if ($email != null) // Si un des champs n'est pas nul
             {
-                if ($type == "Medecin")// Si c'est un Docteur
+                if ($GLOBALS["pdo"]) // Si la connexion à la bdd est réussi
                 {
                     $count = 0;
-                    $cafetiere= "SELECT * FROM medecin";
-                    $selectMedecins= $GLOBALS["pdo"]->query($cafetiere);
     
-                    if($selectMedecins !=false)
+                    $account = "SELECT * FROM account";
+                    $selectAccount = $GLOBALS["pdo"]->query($account);
+        
+                    if($selectAccount != false)
                     {
-                        $row_count=$selectMedecins->rowCount();
-                        if($row_count>0)
-                        {
-                            $tabMedecins= $selectMedecins->fetchAll();
-                            foreach($tabMedecins as $medecins)
-                            {
-                                if($email != $medecins['email'])
-                                {
-                                    $count = 1;
-                                }
-                                else if ($email == $medecins['email'])
-                                {
-                                    return 2;
-                                }
-                            }
-    
-                            if ($count == 1)
-                            {
-                                $insert = "INSERT INTO medecin (civilite, nom, prenom, dateDeNaissance, telephone, email, motDePasse) values ('$civilite','$nom','$prenom', '$datenaissance', '$telephone', '$email', '$motdepasse');";
-                            }
-                        }
-                        else if($row_count==0)
-                        {
-                            $insert = "INSERT INTO medecin (civilite, nom, prenom, dateDeNaissance, telephone, email, motDePasse) values ('$civilite','$nom','$prenom', '$datenaissance', '$telephone', '$email', '$motdepasse');";       
-                        }
-                    }
-                }
-                elseif ($type == "Patient") // Si c'est un Patient
-                {
-                    $count = 0;
-                    $cafetiereconnectetoi = "SELECT * FROM patient";
-                    $selectPatients = $GLOBALS["pdo"]->query($cafetiereconnectetoi);
-    
-                    if($selectPatients !=false)
-                    {
-                        $row_count = $selectPatients->rowCount();
+                        $row_count = $selectAccount->rowCount();
                         if($row_count > 0)
                         {
-                            $tabPatients= $selectPatients->fetchAll();
-                            foreach($tabPatients as $patients)
+                            $tabAccount = $selectAccount->fetchAll();
+                            foreach($tabAccount as $accountX)
                             {
-                                if($email != $patients['email'] && $numSS != $patients["numSS"])
+                                if($email != $accountX['email'])
                                 {
                                     $count = 1;
                                 }
-                                else if ($email == $patients['email'] && $numSS == $patients["numSS"])
+                                else if ($email == $accountX['email'])
                                 {
-                                    return 2;
-                                }
-                                else if ($email == $patients['email'] || $numSS == $patients["numSS"])
-                                {
-                                    return 2;
+                                    $this->creationSucceeded = 2;
+                                    $insert = 2;
+                                    break;
                                 }
                             }
-    
-                            if($count == 1)
+        
+                            if ($count == 1)
                             {
-                                $insert = "INSERT INTO patient (numSS, civilite, nom, prenom, dateDeNaissance, telephone, email, motDePasse) values ('$numSS', '$civilite','$nom','$prenom', '$datenaissance', '$telephone', '$email', '$motdepasse');";
+                                $insert = "INSERT INTO account (nom, email, motdepasse) VALUES ('$nom''$email', '$motdepasse');";
                             }
                         }
-                        else if ($row_count==0)
+                        else if($row_count == 0)
                         {
-                            $insert = "INSERT INTO patient (numSS, civilite, nom, prenom, dateDeNaissance, telephone, email, motDePasse) values ('$numSS', '$civilite','$nom','$prenom', '$datenaissance', '$telephone', '$email', '$motdepasse');";
+                            $insert = "INSERT INTO account (nom, email, motdepasse) VALUES ('$nom''$email', '$motdepasse');";     
                         }
-                        
                     }
-                    
+    
+                    if ($insert != null && $insert != 2)
+                    {
+                        $insertResult = $GLOBALS["pdo"] -> query($insert);
+        
+                        if ($insertResult != false)
+                        {
+                            $this->nom = $nom;
+                            $this->email = $email;
+                            $this->creationSucceeded = 1;
+                        }
+                        else
+                        {
+                            $this->creationSucceeded = 0;
+                        }
+                    }
+                    else if ($insert == null)
+                    {
+                        $this->creationSucceeded = 0;
+                    }
                 }
-    
-                $insertResult = $GLOBALS["pdo"] -> query($insert);
-    
-                if($insertResult != false)
+                else
                 {
-                    $this->civilite = $civilite;
-                    $this->nom = $nom;
-                    $this->prenom = $prenom;
-                    $this->datenaissance = $datenaissance;
-                    $this->telephone = $telephone;
-                    $this->email = $email;
-                    $this->motdepasse = $motdepasse;
-                    $this->type = $type;
+                    $this->creationSucceeded = 0;
+                }
+            }
+        }
 
-                    return 1;
+        public function onConnect($login, $password)
+        {
+            $_SESSION["IsConnecting"] = false;
+        
+            if ($GLOBALS["pdo"]) // Si la connexion à la bdd est réussi
+            {
+                $select = "SELECT email, motDePasse FROM $type where email='$login'";
+                $selectResult = $GLOBALS["pdo"] -> query($select);
+    
+                if ($selectResult != false)
+                {
+                    $row_count = $selectResult->rowCount();
+                    if($row_count > 0)
+                    {
+                        $tabUser = $selectResult -> fetchALL();
+                        foreach($tabUser as $user)
+                        {
+                            if($login == $user['email'] &&  $password == $user['motDePasse']) // Si un user avec le même mdp à était trouvé alors on le connecte
+                            {
+                                return 1;
+                            }
+                            else if ($password != $user['motDePasse'])
+                            {
+                                return 3;
+                            }
+                        }
+                    }
+                    else if ($row_count == 0)
+                    {
+                        return 2;
+                    }
                 }
                 else
                 {
@@ -122,48 +124,10 @@ include("pdo.php");
             }
         }
 
-        // Méthode(s)
-       public function onConnect($login, $password, $type)
-       {
-        $_SESSION["IsConnecting"] = false;
-        
-        if ($GLOBALS["pdo"]) // Si la connexion à la bdd est réussi
+        public function creationSucceeded() 
         {
-            $select = "SELECT email, motDePasse FROM {$this->$type} where email='$login'";
-            $selectResult = $GLOBALS["pdo"] -> query($select);
-
-            if ($selectResult != false)
-            {
-                $row_count=$selectResult->rowCount();
-                if($row_count>0)
-                {
-                    $tabUser = $selectResult -> fetchALL();
-                    foreach($tabUser as $user)
-                    {
-                        if($login == $user['email'] &&  $this->$password == $user['motDePasse']) // Si un user avec le même mdp à était trouvé alors on le connecte
-                        {
-                            return 1;
-                        }
-                        else if ($this->$password != $user['motDePasse'])
-                        {
-                            return 3;
-                        }
-                    }
-                }
-                else if ($row_count == 0)
-                {
-                    return 2;
-                }
-            }
-            else
-            {
-                return 0;
-            }
+            return $this->creationSucceeded;
         }
-        else
-        {
-            return 0;
-        }
-       }
+    
     }
 ?>
