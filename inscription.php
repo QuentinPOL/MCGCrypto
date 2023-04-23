@@ -13,6 +13,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="css/login.css">
+		<link rel="shortcut icon" href="images/favicon.png">
 	</head>
 	
 	<body class="img js-fullheight" style="background-image: url(images/bg.jpg);">
@@ -44,23 +45,14 @@
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-md-6 text-center mb-5">
-					<?php
-						if (isset($_SESSION["IsConnecting"]) && $_SESSION["IsConnecting"] == true)
-						{
-							echo "<h2 class='heading-section'>Compte</h2>";
-						}
-						else
-						{
-							echo "<h2 class='heading-section'>Login</h2>";
-              			}
-					?>
+					<h2 class='heading-section'>Login</h2>
 				</div>
 			</div>
 			<div class="row justify-content-center">
 				<div class="col-md-6 col-lg-4">
 					<div class="login-wrap p-0">
 		      	<h3 class="mb-4 text-center">Non inscrit ?</h3>
-		      	<form action="#" class="signin-form">
+		      	<form action="inscription.php" method="post">
 				  <div class="form-group">
 		      			<input type="text" name="inputNom" class="form-control" placeholder="Nom" maxlength="29" required>
 		      		</div>
@@ -75,15 +67,15 @@
 						<?php
 						    if ($isSignUp == 2)
 							{
-								echo "<p style='color:red; margin-left: 20px;'>Le compte existe déjà</p>"; // On affiche le login est inconnu
+								echo "<p style='color:red; margin-left: 20px;'>Le compte existe déjà</p>"; // On affiche le login est existant
 							}
 						?>
-						<button type="submit" name="btnSignUp" class="form-control btn btn-primary submit px-3">S'inscrire</button>
+						<button type="submit" name="btnSubmit" class="form-control btn btn-primary px-3">S'inscrire</button>
 					</div>
 	          </form>
 	          <p class="w-100 text-center">&mdash; Déjà inscrit ? &mdash;</p>
 	          <div class="social d-flex text-center">
-	          	<a href="login.php" class="px-2 py-2 ml-md-1 rounded"><span class="ion-logo-facebook mr-2"></span>Connexion</a>
+	          	<a href="login.php" class="px-2 py-2 ml-md-1 rounded">Connexion</a>
 	          </div>
 		      </div>
 				</div>

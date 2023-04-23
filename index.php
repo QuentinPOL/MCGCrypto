@@ -12,10 +12,7 @@ session_start();
   <!-- Mobile Metas -->
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <!-- Site Metas -->
-  <meta name="keywords" content="" />
-  <meta name="description" content="" />
-  <meta name="author" content="" />
-  <link rel="shortcut icon" href="images/favicon.png" type="">
+  <link rel="shortcut icon" href="images/favicon.png">
 
   <title> Accueil </title>
 
@@ -39,15 +36,12 @@ session_start();
 </head>
 
 <body>
-
   <div class="hero_area">
-
     <div class="hero_bg_box">
       <div class="bg_img_box">
         <img src="images/hero-bg.png" alt="">
       </div>
     </div>
-
 
     <!-- header section strats -->
     <header class="header_section">
@@ -73,7 +67,16 @@ session_start();
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="login.php"><i class="fa fa-user" aria-hidden="true"></i> Login</a>
+                <?php
+                  if (isset($_SESSION["IsConnecting"]) && $_SESSION["IsConnecting"] == true)
+                  {
+                    echo "<a class='nav-link' href='login.php'><i class='fa fa-user' aria-hidden='true'></i> Compte</a>";
+                  }
+                  else
+                  {
+                    echo "<a class='nav-link' href='login.php'><i class='fa fa-user' aria-hidden='true'></i> Login</a>";
+                  }
+                ?>
               </li>
             </ul>
           </div>
@@ -81,6 +84,7 @@ session_start();
       </div>
     </header>
     <!-- end header section -->
+
     <!-- slider section -->
     <section class="slider_section ">
       <div id="customCarousel1" class="carousel slide" data-ride="carousel">
@@ -114,10 +118,10 @@ session_start();
           </div>
         </div>
       </div>
-
     </section>
     <!-- end slider section -->
   </div>
+  
 
   <!-- footer section -->
   <section class="footer_section">

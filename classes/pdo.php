@@ -1,7 +1,7 @@
 <?php
     try {
         $ipserver = "127.0.0.1";
-        $nomBase = "MCGcrypto";
+        $nomBase = "mcgcrypto";
         $loginPrivilege = "root";
         $passPrivilege = "";
         

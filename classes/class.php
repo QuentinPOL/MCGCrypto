@@ -31,11 +31,11 @@
                             $tabAccount = $selectAccount->fetchAll();
                             foreach($tabAccount as $accountX)
                             {
-                                if($email != $accountX['email'])
+                                if($email != $accountX['email'] && $nom != $accountX['nom'])
                                 {
                                     $count = 1;
                                 }
-                                else if ($email == $accountX['email'])
+                                else if ($email == $accountX['email'] || $nom == $accountX['nom'])
                                 {
                                     $this->creationSucceeded = 2;
                                     $insert = 2;
@@ -45,12 +45,12 @@
         
                             if ($count == 1)
                             {
-                                $insert = "INSERT INTO account (nom, email, motdepasse) VALUES ('$nom''$email', '$motdepasse');";
+                                $insert = "INSERT INTO account (nom, email, password) VALUES ('$nom', '$email', '$motdepasse');";
                             }
                         }
                         else if($row_count == 0)
                         {
-                            $insert = "INSERT INTO account (nom, email, motdepasse) VALUES ('$nom''$email', '$motdepasse');";     
+                            $insert = "INSERT INTO account (nom, email, password) VALUES ('$nom', '$email', '$motdepasse');";     
                         }
                     }
     
@@ -79,15 +79,13 @@
                     $this->creationSucceeded = 0;
                 }
             }
-        }
+        } 
 
         public function onConnect($login, $password)
         {
-            $_SESSION["IsConnecting"] = false;
-        
             if ($GLOBALS["pdo"]) // Si la connexion à la bdd est réussi
             {
-                $select = "SELECT email, motDePasse FROM $type where email='$login'";
+                $select = "SELECT nom, email, motDePasse FROM account where email='$login'";
                 $selectResult = $GLOBALS["pdo"] -> query($select);
     
                 if ($selectResult != false)
@@ -100,6 +98,8 @@
                         {
                             if($login == $user['email'] &&  $password == $user['motDePasse']) // Si un user avec le même mdp à était trouvé alors on le connecte
                             {
+                                // On va ainsi prendre le pseudo pour la session
+                                $_SESSION["Login"] = $user['nom']; // Tableau de session Login = login de l'utilsateur
                                 return 1;
                             }
                             else if ($password != $user['motDePasse'])
@@ -128,6 +128,5 @@
         {
             return $this->creationSucceeded;
         }
-    
     }
 ?>

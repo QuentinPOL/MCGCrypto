@@ -8,11 +8,11 @@
     {
         $isSignUp = -1; // Définition de l'inscriptioon
 
-        if (isset($_POST["btnSignUp"])) // Si il appuis le bouton inscrire en tant que Docteur
+        if (isset($_POST["btnSubmit"])) // Si il appuis le bouton inscrire en tant que Docteur
         {
           if (!(isset($_SESSION["IsConnecting"]))) // Si il est pas connecter
           {
-            $theUser = new User($_POST["inputNom"], $_POST["inputEmail"], $_POST["inputPassword"]);
+            $theUser = new User($_POST["inputNom"], $_POST["inputEmail"], hash('sha256', $_POST["inputPassword"]));
           }
         }
 
@@ -21,7 +21,7 @@
           $_SESSION["IsConnecting"] = true;
           $_SESSION["Login"] = $_POST["inputNom"]; // Tableau de session Login = login de l'utilsateur
 
-          readfile("index.php");
+          echo "<script>window.location.href = 'index.php';</script>";
         }
         else if ($theUser->creationSucceeded() == 2) // Compte existe déjà
         {
@@ -36,16 +36,17 @@
     {
         $statusConnect = -1; // Définition de la connexion
 
-        if (isset($_POST["btnConnecting"])) // Si il appuis le bouton connexion
+        if (isset($_POST["btnSubmit"])) // Si il appuis le bouton connexion
         {
           if (!(isset($_SESSION["IsConnecting"]))) // Si il est pas connecter
           {
-            $statusConnect = $theUser->onConnect($_POST["inputEmail"], $_POST["inputPassword"]);
+            $statusConnect = $theUser->onConnect($_POST["inputEmail"], hash('sha256', $_POST["inputPassword"]));
     
             if ($statusConnect == 1)
             {
               $_SESSION["IsConnecting"] = true;
-              readfile("index.php");
+
+              echo "<script>window.location.href = 'index.php';</script>";
             }
           }
         }
