@@ -85,7 +85,7 @@
         {
             if ($GLOBALS["pdo"]) // Si la connexion à la bdd est réussi
             {
-                $select = "SELECT nom, email, motDePasse FROM account where email='$login'";
+                $select = "SELECT nom, email, password FROM account where email='$login'";
                 $selectResult = $GLOBALS["pdo"] -> query($select);
     
                 if ($selectResult != false)
@@ -96,13 +96,13 @@
                         $tabUser = $selectResult -> fetchALL();
                         foreach($tabUser as $user)
                         {
-                            if($login == $user['email'] &&  $password == $user['motDePasse']) // Si un user avec le même mdp à était trouvé alors on le connecte
+                            if($login == $user['email'] &&  $password == $user['password']) // Si un user avec le même mdp à était trouvé alors on le connecte
                             {
                                 // On va ainsi prendre le pseudo pour la session
                                 $_SESSION["Login"] = $user['nom']; // Tableau de session Login = login de l'utilsateur
                                 return 1;
                             }
-                            else if ($password != $user['motDePasse'])
+                            else if ($password != $user['password'])
                             {
                                 return 3;
                             }

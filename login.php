@@ -52,7 +52,7 @@
 				<div class="col-md-6 col-lg-4">
 					<div class="login-wrap p-0">
 		      	<h3 class="mb-4 text-center">Déjà un compte ?</h3>
-		      	<form action="#" class="signin-form">
+		      	<form action="login.php" method="post">
 		      		<div class="form-group">
 		      			<input type="text" name="inputEmail" class="form-control" placeholder="Exemple@gmail.com" maxlength="199" pattern="+@[a-z0-9.-]+\.[a-z]{2,}$" autocomplete="email" required>
 		      		</div>
