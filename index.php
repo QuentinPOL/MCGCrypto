@@ -66,11 +66,35 @@ session_start();
                 <a class="nav-link" href="about.php">A Propos</a>
               </li>
 
+              <?php          
+                if (isset($_SESSION["IsConnecting"]) && $_SESSION["IsConnecting"] == true)
+                {
+                  ?>
+                    <li class="nav-item">
+                      <a class='nav-link' href='marcher.php'>Marcher</a>
+                    </li>
+                  <?php
+                }
+              ?>
+
               <li class="nav-item">
                 <?php
                   if (isset($_SESSION["IsConnecting"]) && $_SESSION["IsConnecting"] == true)
                   {
-                    echo "<a class='nav-link' href='login.php'><i class='fa fa-user' aria-hidden='true'></i> Compte</a>";
+                    ?>
+                      <form action="" method="post">
+                        <li class="nav-item">
+                          <button type='submit' name='Deconnexion' class="btn btn-primary">Se déconnecter</button>
+                        </li>
+                      </form>
+                    <?php
+                  
+                    if (isset($_POST["Deconnexion"])) // Sinon si l'utilisateur appuis sur le bouton de déconnexion
+                    {
+                      session_unset(); // On supprime tout les tableaux de la session
+                      session_destroy(); // On détruit la session
+                      header("Location: index.php");
+                    }
                   }
                   else
                   {

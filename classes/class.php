@@ -123,10 +123,55 @@
                 return 0;
             }
         }
-
+        // Méthode pour la création de compte
         public function creationSucceeded() 
         {
             return $this->creationSucceeded;
+        }
+
+        // Méthode pour créer un wallet pour l'utilisateur
+        private function createWallet() 
+        {
+            if ($GLOBALS["pdo"])
+            {
+                $insertWallet = "INSERT INTO wallet (user_id) VALUES ('$this->email')";
+                $insertWalletResult = $GLOBALS["pdo"] -> query($insertWallet);
+                if ($insertWalletResult == false)
+                {
+                    // La création du wallet a échoué, on le signale dans le log
+                    error_log("Erreur lors de la création du wallet pour l'utilisateur $this->email");
+                }
+            }
+        }
+
+        // Méthode pour ajouter des fonds à un wallet
+        private function addFunds($amount) 
+        {
+            if ($GLOBALS["pdo"])
+            {
+                $updateWallet = "UPDATE wallet SET balance = balance + $amount WHERE user_id = '$this->email'";
+                $updateWalletResult = $GLOBALS["pdo"] -> query($updateWallet);
+                if ($updateWalletResult == false)
+                {
+                    // L'ajout de fonds a échoué, on le signale dans le log
+                    error_log("Erreur lors de l'ajout de $amount euros au wallet de l'utilisateur $this->email");
+                }
+            }
+        }
+
+        // Méthode pour enlever des fonds à un wallet
+        private function RetiereFunds($amount) 
+        {
+            if ($GLOBALS["pdo"])
+            {
+                $updateWallet = "UPDATE wallet SET balance = balance + $amount WHERE user_id = '$this->email'";
+                $updateWalletResult = $GLOBALS["pdo"] -> query($updateWallet);
+                if ($updateWalletResult == false)
+                {
+                    // L'ajout de fonds a échoué, on le signale dans le log
+                    error_log("Erreur lors de la soustraction de $amount euros au wallet de l'utilisateur $this->email");
+                }
+            }
         }
     }
 ?>

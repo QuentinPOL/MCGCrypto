@@ -1,5 +1,6 @@
 <?php
-session_start();
+  session_start();
+  include("classes/session.php");
 ?>
 
 <!DOCTYPE html>
@@ -12,9 +13,12 @@ session_start();
   <!-- Mobile Metas -->
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <!-- Site Metas -->
-  <link rel="shortcut icon" href="images/favicon.png">
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <link rel="shortcut icon" href="images/favicon.png" type="">
 
-  <title> A Propos </title>
+  <title> MCGCrypto </title>
 
   <!-- bootstrap core css -->
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -30,9 +34,9 @@ session_start();
 
   <!-- Custom styles for this template -->
   <link href="css/style.css" rel="stylesheet" />
-  
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
+
 </head>
 
 <body class="sub_page">
@@ -60,24 +64,16 @@ session_start();
           </button>
 
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav  ">
-              <li class="nav-item ">
+            <ul class="navbar-nav">
+              <li class="nav-item">
                 <a class="nav-link" href="index.php">Accueil</a>
               </li>
-              <li class="nav-item active">
-                <a class="nav-link" href="about.php">A Propos<span class="sr-only">(current)</span> </a>
+              <li class="nav-item">
+                <a class="nav-link" href="about.php">A Propos</a>
               </li>
-
-              <?php          
-                if (isset($_SESSION["IsConnecting"]) && $_SESSION["IsConnecting"] == true)
-                {
-                  ?>
-                    <li class="nav-item">
-                      <a class='nav-link' href='marcher.php'>Marcher</a>
-                    </li>
-                  <?php
-                }
-              ?>
+              <li class="nav-item active">
+                <a class="nav-link" href="about.php">Marcher<span class="sr-only">(current)</span> </a>
+              </li>
 
               <li class="nav-item">
                 <?php
@@ -100,7 +96,7 @@ session_start();
                   }
                   else
                   {
-                    echo "<a class='nav-link' href='login.php'><i class='fa fa-user' aria-hidden='true'></i> Login</a>";
+                    header("Location: login.php");
                   }
                 ?>
               </li>
@@ -112,46 +108,86 @@ session_start();
     <!-- end header section -->
   </div>
 
-  <!-- about section -->
-  <section class="about_section layout_padding">
-    <div class="container">
-      <div class="heading_container heading_center">
-        <h2>
-          A propos de <span>Nous</span>
-        </h2>
-        <p>
-          MCGCrypto est une application web simple spécialement conçu pour faire des petits investissements dans le milieu des cryptomonnaies
-        </p>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="img-box">
-            <img src="images/about-img.png" alt="">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="detail-box">
-            <h3>
-              Nous sommes MCGCrypto
-            </h3>
-            <p>
-              There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration
-              in some form, by injected humour, or randomised words which don't look even slightly believable. If you
-              are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in
-              the middle of text. All
-            </p>
+
+  <section class="service_section layout_padding">
+    <div class="service_container">
+      <div class="container ">
+        <div class="heading_container heading_center">
+          <div class="container mt-5">
+            <h1 class="text-center mb-4">Votre wallet Crypto/Monnaie</h1>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Crypto/monnaie</th>
+                  <th scope="col">Quantité</th>
+                  <th scope="col">Prix</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Bitcoin</td>
+                  <td>1.23</td>
+                  <td>$45,678.90</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="text-right font-weight-bold">Total du Portefeuille: $9999</p>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <!-- end about section -->
+  <!-- end service section -->
+
+  <section class="service_section layout_padding">
+  <div class="container mt-5">
+      <h1 class="text-center mb-4">Achat/Vente Crypto-monnaies</h1>
+      <form>
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="crypto-select">Crypto-monnaie</label>
+            <select id="crypto-select" class="form-control">
+              <option value="BTC">Bitcoin</option>
+              <option value="ETH">Ethereum</option>
+              <option value="LTC">Litecoin</option>
+            </select>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="quantity-input">Quantité</label>
+            <input type="number" class="form-control" id="quantity-input" placeholder="Quantité">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="currency-select">Devise</label>
+            <select id="currency-select" class="form-control">
+              <option value="EUR" selected>Euro</option>
+              <option value="USD">Dollar américain</option>
+              <option value="GBP">Livre sterling</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label for="price-input">Prix d'achat</label>
+            <input type="text" class="form-control" id="buy-price-input" placeholder="0">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="price-input">Prix de vente</label>
+            <input type="text" class="form-control" id="sell-price-input" placeholder="0">
+          </div>
+          <div class="form-group col-md-4">
+            <button type="button" class="btn btn-primary btn-block" onclick="calculatePrices()">Calculer</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+  <!-- end service section -->
 
   <!-- footer section -->
   <section class="footer_section">
-    <div class="container" style="margin-top: 20px;">
+    <div class="container">
       <p>
-        &copy; <span id="displayYear"></span> All Rights Reserved By POLLET Quentin
+      &copy; <span id="displayYear"></span> All Rights Reserved By POLLET Quentin
       </p>
     </div>
   </section>
@@ -169,10 +205,8 @@ session_start();
   </script>
   <!-- custom js -->
   <script type="text/javascript" src="js/custom.js"></script>
-  <!-- Google Map -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
-  </script>
-  <!-- End Google Map -->
+  <!-- Crypto
+  <script src="crypto.js"></script>-->
 
 </body>
 
