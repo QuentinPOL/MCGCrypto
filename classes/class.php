@@ -63,6 +63,21 @@
                             $this->nom = $nom;
                             $this->email = $email;
                             $this->creationSucceeded = 1;
+
+                            $selectID = "SELECT idUser FROM account where nom='$this->nom' and email='$this->email'";
+                            $selectIdResult = $GLOBALS["pdo"] -> query($selectID);
+                
+                            if ($selectIdResult != false)
+                            {
+                                $row_countId = $selectIdResult->rowCount();
+                                if($row_countId > 0)
+                                {
+                                    $UserId = $selectIdResult->fetch();
+
+                                    $this->createWallet($UserId);
+                                    $this->addFunds($UserId, 1, 10);
+                                }
+                            }
                         }
                         else
                         {
@@ -130,31 +145,31 @@
         }
 
         // Méthode pour créer un wallet pour l'utilisateur
-        private function createWallet() 
+        private function createWallet($idUser) 
         {
             if ($GLOBALS["pdo"])
             {
-                $insertWallet = "INSERT INTO wallet (user_id) VALUES ('$this->email')";
+                $insertWallet = "INSERT INTO wallet (idUser) VALUES ('$idUser')";
                 $insertWalletResult = $GLOBALS["pdo"] -> query($insertWallet);
                 if ($insertWalletResult == false)
                 {
                     // La création du wallet a échoué, on le signale dans le log
-                    error_log("Erreur lors de la création du wallet pour l'utilisateur $this->email");
+                    error_log("Erreur lors de la création du wallet pour l'utilisateur $this->nom");
                 }
             }
         }
 
         // Méthode pour ajouter des fonds à un wallet
-        private function addFunds($amount) 
+        private function addFunds($idUser, $idCryto, $amount) 
         {
             if ($GLOBALS["pdo"])
             {
-                $updateWallet = "UPDATE wallet SET balance = balance + $amount WHERE user_id = '$this->email'";
+                $updateWallet = "UPDATE wallet SET balance = balance + $amount WHERE idUser = '$idUser' and idCryto = '$idCryto'";
                 $updateWalletResult = $GLOBALS["pdo"] -> query($updateWallet);
                 if ($updateWalletResult == false)
                 {
                     // L'ajout de fonds a échoué, on le signale dans le log
-                    error_log("Erreur lors de l'ajout de $amount euros au wallet de l'utilisateur $this->email");
+                    error_log("Erreur lors de l'ajout de $amount pour la monnaie $idCryto sur wallet de l'utilisateur $this->nom");
                 }
             }
         }
