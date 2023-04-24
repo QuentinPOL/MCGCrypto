@@ -1,6 +1,6 @@
 <?php
   session_start();
-  include("classes/session.php");
+  include("forms/session.php");
 ?>
 
 <!DOCTYPE html>
@@ -152,45 +152,56 @@
   <!-- end service section -->
 
   <section class="service_section layout_padding">
-  <div class="container mt-5">
-      <h1 class="text-center mb-4">Achat/Vente Crypto-monnaies</h1>
-      <form>
-        <div class="form-row">
-          <div class="form-group col-md-4">
-            <label for="crypto-select">Crypto-monnaie</label>
-            <select id="crypto-select" class="form-control">
-              <option value="BTC">Bitcoin</option>
-              <option value="ETH">Ethereum</option>
-              <option value="LTC">Litecoin</option>
-            </select>
-          </div>
-          <div class="form-group col-md-4">
-            <label for="quantity-input">Quantité</label>
-            <input type="number" class="form-control" id="quantity-input" placeholder="Quantité">
-          </div>
-          <div class="form-group col-md-4">
-            <label for="currency-select">Devise</label>
-            <select id="currency-select" class="form-control">
-              <option value="EUR" selected>Euro</option>
-              <option value="USD">Dollar américain</option>
-              <option value="GBP">Livre sterling</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group col-md-4">
-            <label for="price-input">Prix d'achat</label>
-            <input type="text" class="form-control" id="buy-price-input" placeholder="0">
-          </div>
-          <div class="form-group col-md-4">
-            <label for="price-input">Prix de vente</label>
-            <input type="text" class="form-control" id="sell-price-input" placeholder="0">
-          </div>
-          <div class="form-group col-md-4">
-            <button type="button" class="btn btn-primary btn-block" onclick="calculatePrices()">Calculer</button>
-          </div>
-        </div>
-      </form>
+      <div class="container">
+      <h1 class="my-4 text-center">Achat/Vente de Crypto-monnaie</h1>
+      <div class="row">
+      <?php
+        if ($resulMarket != 2)
+        {
+          foreach ($resulMarket as $market) 
+          {
+            ?>
+              <div class="col-md-6">
+                <h2 class="my-4">Acheter</h2>
+                <form id="buy-form" style="display:none">
+                  <div class="mb-3">
+                    <label for="<?=$market["crypto1"]?>-amount" class="form-label">Montant de la crypto-monnaie <?=$market["crypto1"]?> (<?=$market["price1"]?> €)</label>
+                    <input type="number" class="form-control" id="<?=$market["crypto1"]?>-amount" oninput="updateCryptoAmount()" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="<?=$market["crypto2"]?>-amount" class="form-label">Montant en <?=$market["crypto2"]?> (<?=$market["price2"]?> €)</label>
+                    <input type="number" class="form-control" id="<?=$market["crypto2"]?>-amount" oninput="updateEuroAmount()" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary" id="subimitBuy">Acheter</button>
+                </form>
+              </div>
+              <div class="col-md-6">
+                <h2 class="my-4">Vendre</h2>
+                <form id="sell-form" style="display:none">
+                  <div class="mb-3">
+                    <label for="<?=$market["crypto1"]?>-amount" class="form-label">Montant de la crypto-monnaie <?=$market["crypto1"]?> (<?=$market["price1"]?> €)</label>
+                    <input type="number" class="form-control" id="<?=$market["crypto1"]?>-amount"  oninput="updateCryptoAmount()" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="<?=$market["crypto2"]?>-amount" class="form-label">Montant en <?=$market["crypto2"]?> (<?=$market["price2"]?> €)</label>
+                    <input type="number" class="form-control" id="<?=$market["crypto2"]?>-amount" oninput="updateEuroAmount()" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary" id="subimitSell">Vendre</button>
+                </form>
+              </div>
+            </div>
+            <div class="row justify-content-center">
+              <div class="col-md-4">
+                <div class="d-grid gap-2">
+                  <button class="btn btn-primary" type="button" id="buy-button">Acheter</button>
+                  <button class="btn btn-primary" type="button" id="sell-button">Vendre</button>
+                </div>
+              </div>
+            </div>
+          <?php
+          } 
+        }
+      ?>
     </div>
   </section>
   <!-- end service section -->
@@ -213,12 +224,44 @@
   <!-- bootstrap js -->
   <script type="text/javascript" src="js/bootstrap.js"></script>
   <!-- owl slider -->
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
-  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
   <!-- custom js -->
   <script type="text/javascript" src="js/custom.js"></script>
-  <!-- Crypto
-  <script src="crypto.js"></script>-->
+  <!-- Crypto -->
+  <script src="js/crypto.js"></script>
+
+  <script>
+    function updateCryptoAmount() 
+    {
+      const euroAmount = document.getElementById('<?=$market["crypto2"]?>-amount').value;
+      const cryptoPrice = <?=$market["price1"]?>;
+      const cryptoAmount = euroAmount / cryptoPrice;
+
+      document.getElementById('<?=$market["crypto2"]?>-amount').value = cryptoAmount.toFixed(8);
+    }
+
+    function updateEuroAmount() 
+    {
+      const cryptoAmount = document.getElementById('<?=$market["crypto1"]?>-amount').value;
+      const euroAmountInput = document.getElementById('euro-amount');
+      const cryptoAmountInput = document.getElementById('crypto-amount');
+    }
+
+    euroAmountInput.addEventListener('input', function() {
+    const euroAmount = euroAmountInput.value;
+    const cryptoPrice = <?=$market["price2"]?>;
+    const cryptoAmount = euroAmount / cryptoPrice;
+    cryptoAmountInput.value = cryptoAmount.toFixed(8);
+    });
+
+    cryptoAmountInput.addEventListener('input', function() {
+    const cryptoAmount = cryptoAmountInput.value;
+    const euroPrice = <?=$market["price1"]?>;
+    const euroAmount = cryptoAmount * euroPrice;
+    euroAmountInput.value = euroAmount;
+    });
+
+  </script>
 
 </body>
 

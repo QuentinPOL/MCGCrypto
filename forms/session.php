@@ -45,7 +45,6 @@
             if ($statusConnect == 1)
             {
               $_SESSION["IsConnecting"] = true;
-
               echo "<script>window.location.href = 'index.php';</script>";
             }
           }
@@ -55,5 +54,7 @@
     {
       $resultWallet = $theUser->getAllWallet($_SESSION["idUser"]);
       $totalBalance = null;
+
+      $resulMarket = $theUser->getAllMarket();
     }
 ?>

@@ -204,6 +204,34 @@
             }
         }
 
+        public function getAllMarket()
+        {
+            if ($GLOBALS["pdo"])
+            {
+                $selectAllMarket = "SELECT c1.name AS crypto1, c1.price AS price1, c2.name AS crypto2, c2.price AS price2 FROM market m JOIN crypto c1 ON m.idCrypto1 = c1.idCrypto JOIN crypto c2 ON m.idCrypto2 = c2.idCrypto";
+                $selectAllResult = $GLOBALS["pdo"] -> query($selectAllMarket);
+
+                if ($selectAllResult != false)
+                {
+                    $row_count = $selectAllResult->rowCount();
+                    if($row_count > 0)
+                    {
+                        $tabMarket = $selectAllResult -> fetchALL();
+                        return $tabMarket;
+                    }
+                    else if ($row_count == 0)
+                    {
+                        return 2;
+                    }
+                }
+                else if ($selectAllResult == false)
+                {
+                    // La création du wallet a échoué, on le signale dans le log
+                    error_log("Erreur lors de l'optention des marchés de crypto disponible");
+                }
+            }
+        }
+
         // Méthode pour ajouter des fonds à un wallet
         public function addFunds($idUser, $idCryto, $amount) 
         {
@@ -218,7 +246,7 @@
                 }
             }
         }
-
+        
         // Méthode pour enlever des fonds à un wallet
         public function RetiereFunds($amount) 
         {
