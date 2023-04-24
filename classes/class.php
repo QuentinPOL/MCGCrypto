@@ -64,20 +64,10 @@
                             $this->email = $email;
                             $this->creationSucceeded = 1;
 
-                            $selectID = "SELECT idUser FROM account where nom='$this->nom' and email='$this->email'";
-                            $selectIdResult = $GLOBALS["pdo"] -> query($selectID);
-                
-                            if ($selectIdResult != false)
-                            {
-                                $row_countId = $selectIdResult->rowCount();
-                                if($row_countId > 0)
-                                {
-                                    $UserId = $selectIdResult->fetch();
+                            $UserId = $this->getIdUser($this->email);
+                            $_SESSION["idUser"] = $UserId;
 
-                                    $this->createWallet($UserId);
-                                    $this->addFunds($UserId, 1, 10);
-                                }
-                            }
+                            $this->createWallet($UserId, 1, 10, 10);
                         }
                         else
                         {
@@ -115,6 +105,10 @@
                             {
                                 // On va ainsi prendre le pseudo pour la session
                                 $_SESSION["Login"] = $user['nom']; // Tableau de session Login = login de l'utilsateur
+
+                                $UserId = $this->getIdUser($login);
+                                $_SESSION["idUser"] = $UserId;
+                                
                                 return 1;
                             }
                             else if ($password != $user['password'])
@@ -138,6 +132,26 @@
                 return 0;
             }
         }
+
+        public function getIdUser($login)
+        {
+            $idUser = null;
+
+            $selectID = "SELECT idUser FROM account where email='$login'";
+            $selectIdResult = $GLOBALS["pdo"] -> query($selectID);
+
+            if ($selectIdResult != false)
+            {
+                $row_countId = $selectIdResult->rowCount();
+                if($row_countId > 0)
+                {
+                    $idUser = $selectIdResult->fetch();
+                }
+            }
+
+            return $idUser;
+        }
+
         // Méthode pour la création de compte
         public function creationSucceeded() 
         {
@@ -145,11 +159,11 @@
         }
 
         // Méthode pour créer un wallet pour l'utilisateur
-        private function createWallet($idUser) 
+        public function createWallet($idUser, $idCrypto, $amount, $balance) 
         {
             if ($GLOBALS["pdo"])
             {
-                $insertWallet = "INSERT INTO wallet (idUser) VALUES ('$idUser')";
+                $insertWallet = "INSERT INTO wallet (idUser, idCrypto, nombre, balance) VALUES ('$idUser', '$idCrypto', '$amount', '$balance')";
                 $insertWalletResult = $GLOBALS["pdo"] -> query($insertWallet);
                 if ($insertWalletResult == false)
                 {
@@ -159,32 +173,63 @@
             }
         }
 
+        public function getAllWallet($idUser)
+        {
+            $idUserNotConv = implode('', $idUser);
+            $idUserConvert = substr($idUserNotConv, 0, 1) . substr($idUserNotConv, 2);
+
+            if ($GLOBALS["pdo"])
+            {
+                $selectAllWallet = "SELECT crypto.name, wallet.nombre, wallet.balance FROM crypto,wallet WHERE wallet.idCrypto = Crypto.idCrypto and wallet.idUser='$idUserConvert'";
+                $selectAllResult = $GLOBALS["pdo"] -> query($selectAllWallet);
+
+                if ($selectAllResult != false)
+                {
+                    $row_count = $selectAllResult->rowCount();
+                    if($row_count > 0)
+                    {
+                        $tabCrypto = $selectAllResult -> fetchALL();
+                        return $tabCrypto;
+                    }
+                    else if ($row_count == 0)
+                    {
+                        return 2;
+                    }
+                }
+                else if ($selectAllResult == false)
+                {
+                    // La création du wallet a échoué, on le signale dans le log
+                    error_log("Erreur lors de la création du wallet pour l'utilisateur ".$_SESSION["Login"]."");
+                }
+            }
+        }
+
         // Méthode pour ajouter des fonds à un wallet
-        private function addFunds($idUser, $idCryto, $amount) 
+        public function addFunds($idUser, $idCryto, $amount) 
         {
             if ($GLOBALS["pdo"])
             {
-                $updateWallet = "UPDATE wallet SET balance = balance + $amount WHERE idUser = '$idUser' and idCryto = '$idCryto'";
+                $updateWallet = "UPDATE wallet SET balance = balance + $amount WHERE idUser='$idUser' and idCryto='$idCryto'";
                 $updateWalletResult = $GLOBALS["pdo"] -> query($updateWallet);
                 if ($updateWalletResult == false)
                 {
                     // L'ajout de fonds a échoué, on le signale dans le log
-                    error_log("Erreur lors de l'ajout de $amount pour la monnaie $idCryto sur wallet de l'utilisateur $this->nom");
+                    error_log("Erreur lors de l'ajout de $amount pour la monnaie $idCryto sur wallet de l'utilisateur ".$_SESSION["Login"]."");
                 }
             }
         }
 
         // Méthode pour enlever des fonds à un wallet
-        private function RetiereFunds($amount) 
+        public function RetiereFunds($amount) 
         {
             if ($GLOBALS["pdo"])
             {
-                $updateWallet = "UPDATE wallet SET balance = balance + $amount WHERE user_id = '$this->email'";
+                $updateWallet = "UPDATE wallet SET balance = balance + $amount WHERE user_id='$this->email'";
                 $updateWalletResult = $GLOBALS["pdo"] -> query($updateWallet);
                 if ($updateWalletResult == false)
                 {
                     // L'ajout de fonds a échoué, on le signale dans le log
-                    error_log("Erreur lors de la soustraction de $amount euros au wallet de l'utilisateur $this->email");
+                    error_log("Erreur lors de la soustraction de $amount euros au wallet de l'utilisateur ".$_SESSION["Login"]."");
                 }
             }
         }

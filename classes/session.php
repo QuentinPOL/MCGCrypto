@@ -51,4 +51,9 @@
           }
         }
     }
+    else if (strpos($current_url, '/marcher.php') !== false) // Si page marcher/wallet
+    {
+      $resultWallet = $theUser->getAllWallet($_SESSION["idUser"]);
+      $totalBalance = null;
+    }
 ?>

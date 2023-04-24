@@ -124,14 +124,26 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Bitcoin</td>
-                  <td>1.23</td>
-                  <td>$45,678.90</td>
-                </tr>
+                <?php
+                  if ($resultWallet != 2)
+                  {
+                    foreach ($resultWallet as $wallet) 
+                    {
+                      ?>
+                        <tr>  
+                          <td><?=$wallet["name"]?></td>
+                          <td><?=$wallet["nombre"]?></td>
+                          <td><?=$wallet["balance"]?> €</td>
+                        </tr>
+                      <?php
+
+                      $totalBalance += $wallet["balance"];
+                    }
+                  }
+                ?>
               </tbody>
             </table>
-            <p class="text-right font-weight-bold">Total du Portefeuille: $9999</p>
+            <p class="text-right font-weight-bold">Total du Portefeuille: <?=$totalBalance?> €</p>
           </div>
         </div>
       </div>
