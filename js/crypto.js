@@ -2,7 +2,7 @@ const buyForm = document.getElementById('buy-form');
 const sellForm = document.getElementById('sell-form');
 const buyButton = document.getElementById('buy-button');
 const sellButton = document.getElementById('sell-button');
-const chooseMethod = null;
+var chooseMethod = null;
 
 buyButton.addEventListener('click', function() {
   buyForm.style.display = 'block';
@@ -16,7 +16,7 @@ sellButton.addEventListener('click', function() {
   chooseMethod = 2;
 });
 
-function apiBuySellCrypto(params) 
+function apiBuySellCrypto() 
 {
     // Créer un objet JSON avec les données à envoyer
     const data = {name: "John", test: "hebefhgbejh", method: chooseMethod};
