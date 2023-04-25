@@ -2,10 +2,10 @@
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Apr 21, 2023 at 01:22 PM
--- Server version: 10.5.18-MariaDB-0+deb11u1
--- PHP Version: 7.4.33
+-- Host: 127.0.0.1
+-- Generation Time: Apr 26, 2023 at 01:25 AM
+-- Server version: 10.4.27-MariaDB
+-- PHP Version: 8.0.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `MCGcrypto`
+-- Database: `mcgcrypto`
 --
 
 -- --------------------------------------------------------
@@ -29,10 +29,18 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `account` (
   `idUser` int(11) NOT NULL,
-  `nom` int(30) NOT NULL,
+  `nom` varchar(30) NOT NULL,
   `email` varchar(200) NOT NULL,
-  `password` varchar(30) NOT NULL
+  `password` varchar(300) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `account`
+--
+
+INSERT INTO `account` (`idUser`, `nom`, `email`, `password`) VALUES
+(4, 'Test', '5454', 'eecaf27b183b049cc9e2b549b8521ab09369e9616b43a6be604bb9ad9fccb757'),
+(5, 'Tes', 'Quentinpol140@gmail.com', '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4');
 
 -- --------------------------------------------------------
 
@@ -42,8 +50,17 @@ CREATE TABLE `account` (
 
 CREATE TABLE `crypto` (
   `idCrypto` int(11) NOT NULL,
-  `name` varchar(30) NOT NULL
+  `name` varchar(30) NOT NULL,
+  `price` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `crypto`
+--
+
+INSERT INTO `crypto` (`idCrypto`, `name`, `price`) VALUES
+(1, 'MCGCoin', 15),
+(2, 'Euro', 1);
 
 -- --------------------------------------------------------
 
@@ -57,6 +74,13 @@ CREATE TABLE `market` (
   `idCrypto2` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `market`
+--
+
+INSERT INTO `market` (`idMarket`, `idCrypto1`, `idCrypto2`) VALUES
+(1, 1, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -67,10 +91,59 @@ CREATE TABLE `transaction` (
   `idTransaction` int(11) NOT NULL,
   `idMarket` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
-  `type` varchar(10) NOT NULL,
-  `amount` int(11) NOT NULL,
-  `price` int(11) NOT NULL
+  `type` int(11) NOT NULL,
+  `amountCrypto` float NOT NULL,
+  `amountEuro` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `transaction`
+--
+
+INSERT INTO `transaction` (`idTransaction`, `idMarket`, `idUser`, `type`, `amountCrypto`, `amountEuro`) VALUES
+(4, 1, 5, 1, 15, 225),
+(5, 1, 5, 1, 15, 225),
+(6, 1, 5, 1, 15, 225),
+(7, 1, 5, 1, 15, 225),
+(8, 1, 5, 1, 1, 15),
+(9, 1, 5, 1, 1, 15),
+(10, 1, 5, 1, 1, 15),
+(11, 1, 5, 1, 1, 15),
+(12, 1, 5, 1, 1, 15),
+(13, 1, 5, 1, 1, 15),
+(14, 1, 5, 1, 1, 15),
+(15, 1, 5, 1, 15, 225),
+(16, 1, 5, 1, 1, 15),
+(17, 1, 5, 1, 0.666667, 10),
+(18, 1, 5, 1, 1, 15),
+(19, 1, 5, 1, 1, 15),
+(20, 1, 5, 1, 1, 15),
+(21, 1, 5, 1, 1, 15),
+(22, 1, 5, 1, 1, 15),
+(23, 1, 5, 2, 1, 15),
+(24, 1, 5, 2, 1, 15),
+(25, 1, 5, 1, 1, 15),
+(26, 1, 5, 2, 1, 15),
+(27, 1, 5, 2, 1, 15),
+(28, 1, 5, 1, 1, 15),
+(29, 1, 5, 2, 1, 15),
+(30, 1, 5, 1, 1, 15),
+(31, 1, 5, 1, 15, 225),
+(32, 1, 5, 1, 12, 180),
+(33, 1, 5, 1, 12, 180),
+(34, 1, 5, 1, 11, 165),
+(35, 1, 5, 1, 1, 15),
+(36, 1, 5, 1, 1, 15),
+(37, 1, 5, 1, 7.66667, 115),
+(38, 1, 5, 1, 1, 15),
+(39, 1, 5, 1, 1, 15),
+(40, 1, 5, 1, 2, 30),
+(41, 1, 5, 1, 1, 15),
+(42, 1, 5, 1, 1, 15),
+(43, 1, 5, 1, 15, 225),
+(44, 1, 5, 2, 1, 15),
+(45, 1, 5, 1, 1, 15),
+(46, 1, 5, 2, 1, 15);
 
 -- --------------------------------------------------------
 
@@ -81,8 +154,19 @@ CREATE TABLE `transaction` (
 CREATE TABLE `wallet` (
   `idWallet` int(11) NOT NULL,
   `IdUser` int(11) NOT NULL,
-  `balance` int(11) NOT NULL
+  `idCrypto` int(11) NOT NULL,
+  `amount` float NOT NULL,
+  `balanceEUR` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `wallet`
+--
+
+INSERT INTO `wallet` (`idWallet`, `IdUser`, `idCrypto`, `amount`, `balanceEUR`) VALUES
+(1, 4, 2, 10, 10),
+(2, 5, 2, 20, 35),
+(3, 5, 1, 2, 30);
 
 --
 -- Indexes for dumped tables
@@ -122,7 +206,7 @@ ALTER TABLE `transaction`
 ALTER TABLE `wallet`
   ADD PRIMARY KEY (`idWallet`),
   ADD KEY `IdUser` (`IdUser`),
-  ADD KEY `balance` (`balance`);
+  ADD KEY `idCrypto` (`idCrypto`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -132,31 +216,31 @@ ALTER TABLE `wallet`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `crypto`
 --
 ALTER TABLE `crypto`
-  MODIFY `idCrypto` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idCrypto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `market`
 --
 ALTER TABLE `market`
-  MODIFY `idMarket` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idMarket` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `idTransaction` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idTransaction` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `wallet`
 --
 ALTER TABLE `wallet`
-  MODIFY `idWallet` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idWallet` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -180,7 +264,8 @@ ALTER TABLE `transaction`
 -- Constraints for table `wallet`
 --
 ALTER TABLE `wallet`
-  ADD CONSTRAINT `wallet_ibfk_1` FOREIGN KEY (`IdUser`) REFERENCES `account` (`idUser`);
+  ADD CONSTRAINT `wallet_ibfk_1` FOREIGN KEY (`IdUser`) REFERENCES `account` (`idUser`),
+  ADD CONSTRAINT `wallet_ibfk_2` FOREIGN KEY (`idCrypto`) REFERENCES `crypto` (`idCrypto`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

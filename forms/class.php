@@ -254,11 +254,21 @@
                         {
                             return 2;
                         }
+
+                        if ($this->retrieveFunds($idUserConvert, $idCrypto2, $amountEuro) == 2) // On va retirer le montant en euro
+                        {
+                            return 2;
+                        }
             
                     }
                     else if($type == 2) // Si c'est une vente
                     {
                         if ($this->addFunds($idUserConvert, $idCrypto2, $amountEuro) == 2) // On va rajouter le montant en euro
+                        {
+                            return 2;
+                        }
+
+                        if ($this->retrieveFunds($idUserConvert, $idCryto1, $amountCrypto) == 2) // On va retier le montant en crypto
                         {
                             return 2;
                         }
@@ -273,7 +283,22 @@
         {
             if ($GLOBALS["pdo"])
             {
-                $updateWallet = "UPDATE wallet w INNER JOIN crypto c ON w.idCrypto = c.idCrypto SET w.balanceEUR = w.balanceEUR + ($newBalance * c.price) WHERE w.idUser='$idUser' and w.idCrypto='$idCryto'";
+                $updateWallet = "UPDATE wallet w INNER JOIN crypto c ON w.idCrypto = c.idCrypto SET w.balanceEUR = w.balanceEUR + ($newBalance * c.price), w.amount = w.balanceEUR / c.price WHERE w.idUser='$idUser' and w.idCrypto='$idCryto'";
+                $updateWalletResult = $GLOBALS["pdo"] -> query($updateWallet);
+
+                if ($updateWalletResult == false)
+                {
+                    return 2;
+                }
+            }
+        }
+
+        // Méthode pour enlever des fonds à un wallet
+        public function retrieveFunds($idUser, $idCryto, $newBalance) 
+        {
+            if ($GLOBALS["pdo"])
+            {
+                $updateWallet = "UPDATE wallet w INNER JOIN crypto c ON w.idCrypto = c.idCrypto SET w.balanceEUR = w.balanceEUR - ($newBalance * c.price), w.amount = w.balanceEUR / c.price WHERE w.idUser='$idUser' and w.idCrypto='$idCryto'";
                 $updateWalletResult = $GLOBALS["pdo"] -> query($updateWallet);
 
                 if ($updateWalletResult == false)

@@ -29,8 +29,8 @@ function apiBuySellCrypto(amountCrypto, amountEuro, type, market, crypto1, crypt
     .then(response => response.json())
     .then(data => {
         // Récupérer les données de la réponse et les afficher dans une div
-        const div = document.getElementById("maDiv");
-        div.innerHTML = JSON.stringify(data.amountCryp);
+        const pAPI = document.getElementById("textAPI");
+        pAPI.innerHTML = JSON.stringify(data);
     })
     .catch(error => console.error(error));    
 }

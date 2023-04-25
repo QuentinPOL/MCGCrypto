@@ -113,8 +113,8 @@
     <div class="service_container">
       <div class="container ">
         <div class="heading_container heading_center">
-          <div class="container mt-5">
-            <h1 class="text-center mb-4">Votre wallet Crypto/Monnaie</h1>
+          <div class="container">
+            <h1 class="text-center mb-5">Votre wallet Crypto/Monnaie</h1>
             <table class="table table-hover">
               <thead>
                 <tr>
@@ -153,8 +153,8 @@
 
   <section class="service_section layout_padding">
       <div class="container">
-      <h1 class="my-4 text-center">Achat/Vente de Crypto-monnaie</h1>
-      <div class="row">
+      <h1 class="text-center">Achat/Vente de Crypto-monnaie</h1>
+      <div class="row mt-5">
       <?php
         if ($resulMarket != 2)
         {
@@ -202,6 +202,11 @@
           } 
         }
       ?>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center">
+        <p id="textAPI"></p>
+      </div>
     </div>
   </section>
   <!-- end service section -->
