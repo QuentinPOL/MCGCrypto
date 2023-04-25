@@ -67,7 +67,8 @@
                             $UserId = $this->getIdUser($this->email);
                             $_SESSION["idUser"] = $UserId;
 
-                            $this->createWallet($UserId, 1, 10, 10);
+                            $this->createWallet($UserId, 1, 1, 15); // Création MCGCoin (pour 15 euros = 1 MCGCoin)
+                            $this->createWallet($UserId, 2, 10, 10); // Création Euro (pour 10 euros = 10 euros)
                         }
                         else
                         {
@@ -133,6 +134,7 @@
             }
         }
 
+
         public function getIdUser($login)
         {
             $idUser = null;
@@ -163,7 +165,7 @@
         {
             if ($GLOBALS["pdo"])
             {
-                $insertWallet = "INSERT INTO wallet (idUser, idCrypto, nombre, balance) VALUES ('$idUser', '$idCrypto', '$amount', '$balance')";
+                $insertWallet = "INSERT INTO wallet (idUser, idCrypto, amount, balanceEUR) VALUES ('$idUser', '$idCrypto', '$amount', '$balance')";
                 $insertWalletResult = $GLOBALS["pdo"] -> query($insertWallet);
                 if ($insertWalletResult == false)
                 {
@@ -173,6 +175,7 @@
             }
         }
 
+        // Méthode pour récuperer tout les wallets
         public function getAllWallet($idUser)
         {
             $idUserNotConv = implode('', $idUser);
@@ -180,7 +183,7 @@
 
             if ($GLOBALS["pdo"])
             {
-                $selectAllWallet = "SELECT crypto.name, wallet.nombre, wallet.balance FROM crypto,wallet WHERE wallet.idCrypto = Crypto.idCrypto and wallet.idUser='$idUserConvert'";
+                $selectAllWallet = "SELECT crypto.name, wallet.amount, wallet.balanceEUR FROM crypto,wallet WHERE wallet.idCrypto = Crypto.idCrypto and wallet.idUser='$idUserConvert'";
                 $selectAllResult = $GLOBALS["pdo"] -> query($selectAllWallet);
 
                 if ($selectAllResult != false)
@@ -198,17 +201,17 @@
                 }
                 else if ($selectAllResult == false)
                 {
-                    // La création du wallet a échoué, on le signale dans le log
-                    error_log("Erreur lors de la création du wallet pour l'utilisateur ".$_SESSION["Login"]."");
+                    return 2;
                 }
             }
         }
 
+        // Méthode pour Récupérer tout les marcher
         public function getAllMarket()
         {
             if ($GLOBALS["pdo"])
             {
-                $selectAllMarket = "SELECT c1.name AS crypto1, c1.price AS price1, c2.name AS crypto2, c2.price AS price2 FROM market m JOIN crypto c1 ON m.idCrypto1 = c1.idCrypto JOIN crypto c2 ON m.idCrypto2 = c2.idCrypto";
+                $selectAllMarket = "SELECT m.idMarket, m.idCrypto1, c1.name AS crypto1, c1.price AS price1, m.idCrypto2, c2.name AS crypto2, c2.price AS price2 FROM market m JOIN crypto c1 ON m.idCrypto1 = c1.idCrypto JOIN crypto c2 ON m.idCrypto2 = c2.idCrypto";
                 $selectAllResult = $GLOBALS["pdo"] -> query($selectAllMarket);
 
                 if ($selectAllResult != false)
@@ -232,32 +235,50 @@
             }
         }
 
-        // Méthode pour ajouter des fonds à un wallet
-        public function addFunds($idUser, $idCryto, $amount) 
+        // Méthode pour créer une nouvelle transaction
+        public function createTransaction($amountCrypto, $amountEuro, $type, $idMarket, $idUser, $idCryto1, $idCrypto2)
         {
+            $idUserNotConv = implode('', $idUser);
+            $idUserConvert = substr($idUserNotConv, 0, 1) . substr($idUserNotConv, 2);
+
             if ($GLOBALS["pdo"])
             {
-                $updateWallet = "UPDATE wallet SET balance = balance + $amount WHERE idUser='$idUser' and idCryto='$idCryto'";
-                $updateWalletResult = $GLOBALS["pdo"] -> query($updateWallet);
-                if ($updateWalletResult == false)
+                $insertTransaction = "INSERT INTO transaction (idMarket, idUser, type, amountCrypto, amountEuro) VALUES ('$idMarket', '$idUserConvert', '$type', '$amountCrypto', '$amountEuro')";
+                $insertTransactionResult = $GLOBALS["pdo"] -> query($insertTransaction);
+            
+                if ($insertTransactionResult != false)
                 {
-                    // L'ajout de fonds a échoué, on le signale dans le log
-                    error_log("Erreur lors de l'ajout de $amount pour la monnaie $idCryto sur wallet de l'utilisateur ".$_SESSION["Login"]."");
+                    if ($type == 1) // Si c'est un achat
+                    {
+                        if ($this->addFunds($idUserConvert, $idCryto1, $amountCrypto) == 2) // On va ajouter le montant en crypto
+                        {
+                            return 2;
+                        }
+            
+                    }
+                    else if($type == 2) // Si c'est une vente
+                    {
+                        if ($this->addFunds($idUserConvert, $idCrypto2, $amountEuro) == 2) // On va rajouter le montant en euro
+                        {
+                            return 2;
+                        }
+            
+                    }
                 }
             }
         }
-        
-        // Méthode pour enlever des fonds à un wallet
-        public function RetiereFunds($amount) 
+
+        // Méthode pour ajouter des fonds à un wallet
+        public function addFunds($idUser, $idCryto, $newBalance) 
         {
             if ($GLOBALS["pdo"])
             {
-                $updateWallet = "UPDATE wallet SET balance = balance + $amount WHERE user_id='$this->email'";
+                $updateWallet = "UPDATE wallet w INNER JOIN crypto c ON w.idCrypto = c.idCrypto SET w.balanceEUR = w.balanceEUR + ($newBalance * c.price) WHERE w.idUser='$idUser' and w.idCrypto='$idCryto'";
                 $updateWalletResult = $GLOBALS["pdo"] -> query($updateWallet);
+
                 if ($updateWalletResult == false)
                 {
-                    // L'ajout de fonds a échoué, on le signale dans le log
-                    error_log("Erreur lors de la soustraction de $amount euros au wallet de l'utilisateur ".$_SESSION["Login"]."");
+                    return 2;
                 }
             }
         }

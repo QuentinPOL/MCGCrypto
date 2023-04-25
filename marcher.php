@@ -132,12 +132,12 @@
                       ?>
                         <tr>  
                           <td><?=$wallet["name"]?></td>
-                          <td><?=$wallet["nombre"]?></td>
-                          <td><?=$wallet["balance"]?> €</td>
+                          <td><?=$wallet["amount"]?></td>
+                          <td><?=$wallet["balanceEUR"]?> €</td>
                         </tr>
                       <?php
 
-                      $totalBalance += $wallet["balance"];
+                      $totalBalance += $wallet["balanceEUR"];
                     }
                   }
                 ?>
@@ -172,7 +172,7 @@
                     <label for="<?=$market["crypto2"]?>-amount" class="form-label">Montant en <?=$market["crypto2"]?> (<?=$market["price2"]?> €)</label>
                     <input type="number" class="form-control" id="<?=$market["crypto2"]?>-amount" oninput="updatePriceInput(2, 1)" required>
                   </div>
-                  <button type="submit" class="btn btn-primary" id="subimitBuy">Acheter</button>
+                  <button type="button" class="btn btn-primary" id="subimitBuy" onclick="callApi('<?=$market['crypto1']?>-amount', '<?=$market['crypto2']?>-amount', 1, <?=$market['idMarket']?>, <?=$market['idCrypto1']?>, <?=$market['idCrypto2']?>)">Acheter</button>
                 </form>
               </div>
               <div class="col-md-6">
@@ -186,7 +186,7 @@
                     <label for="<?=$market["crypto2"]?>-amount" class="form-label">Montant en <?=$market["crypto2"]?> (<?=$market["price2"]?> €)</label>
                     <input type="number" class="form-control" id="<?=$market["crypto2"]?>-amount2" oninput="updatePriceInput(2, 2)" required>
                   </div>
-                  <button type="submit" class="btn btn-primary" id="subimitSell">Vendre</button>
+                  <button type="button" class="btn btn-primary" id="subimitSell" onclick="callApi('<?=$market['crypto1']?>-amount2', '<?=$market['crypto2']?>-amount2', 2, <?=$market['idMarket']?>, <?=$market['idCrypto1']?>, <?=$market['idCrypto2']?>)">Vendre</button>
                 </form>
               </div>
             </div>
@@ -285,6 +285,14 @@
           });
         }
       }
+    }
+
+    function callApi(inputCrypto, inputEuro, type, market, crypto1, crypto2) 
+    {
+      const amountCrypto = document.getElementById(inputCrypto).value;
+      const amountEuro = document.getElementById(inputEuro).value;
+
+      apiBuySellCrypto(amountCrypto, amountEuro, type, market, crypto1, crypto2);
     }
 
   </script>
