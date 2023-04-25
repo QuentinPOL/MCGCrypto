@@ -28,9 +28,17 @@ function apiBuySellCrypto(amountCrypto, amountEuro, type, market, crypto1, crypt
     })
     .then(response => response.json())
     .then(data => {
-        // Récupérer les données de la réponse et les afficher dans une div
+        // Récupérer les données de la réponse et les afficher dans le paragraphe
         const pAPI = document.getElementById("textAPI");
-        pAPI.innerHTML = JSON.stringify(data);
+
+        if (JSON.stringify(data[2]) == 1) // Si c'est achat
+        {
+          pAPI.innerHTML = "Vous avez achetez " + JSON.stringify(data[0]) + " unité(s) pour un total de " + JSON.stringify(data[1]) + " euro(s)";
+        }
+        else if (JSON.stringify(data[2]) == 2) // Si c'est une vente
+        {
+          pAPI.innerHTML = "Vous avez vendu " + JSON.stringify(data[0]) + " unité(s) pour un total de " + JSON.stringify(data[1]) + " euro(s)";
+        }
     })
     .catch(error => console.error(error));    
 }

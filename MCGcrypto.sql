@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 26, 2023 at 01:25 AM
+-- Generation Time: Apr 26, 2023 at 01:44 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.0.25
 
@@ -143,7 +143,10 @@ INSERT INTO `transaction` (`idTransaction`, `idMarket`, `idUser`, `type`, `amoun
 (43, 1, 5, 1, 15, 225),
 (44, 1, 5, 2, 1, 15),
 (45, 1, 5, 1, 1, 15),
-(46, 1, 5, 2, 1, 15);
+(46, 1, 5, 2, 1, 15),
+(47, 1, 5, 1, 15, 225),
+(48, 1, 5, 1, 15, 225),
+(49, 1, 5, 2, 1, 15);
 
 -- --------------------------------------------------------
 
@@ -165,8 +168,8 @@ CREATE TABLE `wallet` (
 
 INSERT INTO `wallet` (`idWallet`, `IdUser`, `idCrypto`, `amount`, `balanceEUR`) VALUES
 (1, 4, 2, 10, 10),
-(2, 5, 2, 20, 35),
-(3, 5, 1, 2, 30);
+(2, 5, 2, -415, -400),
+(3, 5, 1, 31, 465);
 
 --
 -- Indexes for dumped tables
@@ -234,7 +237,7 @@ ALTER TABLE `market`
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `idTransaction` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `idTransaction` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT for table `wallet`
