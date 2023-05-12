@@ -183,7 +183,7 @@
 
             if ($GLOBALS["pdo"])
             {
-                $selectAllWallet = "SELECT crypto.name, wallet.amount, wallet.balanceEUR FROM crypto,wallet WHERE wallet.idCrypto = Crypto.idCrypto and wallet.idUser='$idUserConvert'";
+                $selectAllWallet = "SELECT crypto.name, wallet.amount, wallet.balanceEUR FROM crypto,wallet WHERE wallet.idCrypto = crypto.idCrypto and wallet.idUser='$idUserConvert'";
                 $selectAllResult = $GLOBALS["pdo"] -> query($selectAllWallet);
 
                 if ($selectAllResult != false)
@@ -243,6 +243,44 @@
 
             if ($GLOBALS["pdo"])
             {
+                if ($type == 1)
+                {
+                    $selectAmountEuro = "SELECT wallet.balanceEUR FROM wallet WHERE wallet.idCrypto = '$idCrypto2' and wallet.idUser='$idUserConvert'";
+                }
+                
+                $selectAmoutResult = $GLOBALS["pdo"] -> query($selectAmountEuro);
+
+                if ($selectAmoutResult != false)
+                {
+                    $row_count = $selectAmoutResult->rowCount();
+                    if($row_count > 0)
+                    {
+                        $amountEuroWallet = $selectAmoutResult ->fetch();
+
+                        if ($amountEuroWallet["balanceEUR"] < $amountEuro) // Si le montant en euro est pas suffisant dans le wallet
+                        {
+                            $amountEuroWallet = 2;
+                        }
+                        else
+                        {
+                            $amountEuroWallet = 1;
+                        }
+                    }
+                    else if ($row_count == 0)
+                    {
+                        return 2;
+                    }
+                }
+                else if ($selectAmoutResult == false)
+                {
+                    return 2;
+                }
+
+                if ($type == 1 && $amountEuroWallet == 2) // Si c'est un achat et qu'il n'a pas le montant suffisant
+                {
+                    return 3;
+                }
+
                 $insertTransaction = "INSERT INTO transaction (idMarket, idUser, type, amountCrypto, amountEuro) VALUES ('$idMarket', '$idUserConvert', '$type', '$amountCrypto', '$amountEuro')";
                 $insertTransactionResult = $GLOBALS["pdo"] -> query($insertTransaction);
             
