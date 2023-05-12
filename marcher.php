@@ -115,7 +115,7 @@
         <div class="heading_container heading_center">
           <div class="container">
             <h1 class="text-center mb-5">Votre wallet Crypto/Monnaie</h1>
-            <table class="table table-hover">
+            <table class="table table-hover" id="wallet">
               <thead>
                 <tr>
                   <th scope="col">Crypto/monnaie</th>
@@ -143,7 +143,7 @@
                 ?>
               </tbody>
             </table>
-            <p class="text-right font-weight-bold">Total du Portefeuille: <?=$totalBalance?> €</p>
+            <p class="text-right font-weight-bold" id="balanceTotal">Total du Portefeuille: <?=$totalBalance?> €</p>
           </div>
         </div>
       </div>

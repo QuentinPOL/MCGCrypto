@@ -16,9 +16,11 @@
 
     $theUser = new User(NULL, NULL, NULL); // Définition de l'utilsateur à NULL
     $resulAction = $theUser->createTransaction($tableauDonnee[0],  $tableauDonnee[1],  $tableauDonnee[2], $tableauDonnee[3], $_SESSION["idUser"], $tableauDonnee[4], $tableauDonnee[5]); // On Créer la nouvelle transaction
-    
-    if ($resulAction != 2)
+    $resultWallet = $theUser->getAllWallet($_SESSION["idUser"]);
+
+    if ($resultWallet  != 2)
     {
+        $tableauDonnee["walletUser"] = $resultWallet;
         echo json_encode($tableauDonnee);
     }
     else 

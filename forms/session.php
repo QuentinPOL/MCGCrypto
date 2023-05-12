@@ -18,6 +18,7 @@
 
         if ($theUser->creationSucceeded() == 1) // Création réussi
         {
+
           $_SESSION["IsConnecting"] = true;
           $_SESSION["Login"] = $_POST["inputNom"]; // Tableau de session Login = login de l'utilsateur
 

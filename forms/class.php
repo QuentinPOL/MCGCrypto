@@ -67,8 +67,8 @@
                             $UserId = $this->getIdUser($this->email);
                             $_SESSION["idUser"] = $UserId;
 
-                            $this->createWallet($UserId, 1, 1, 15); // Création MCGCoin (pour 15 euros = 1 MCGCoin)
-                            $this->createWallet($UserId, 2, 10, 10); // Création Euro (pour 10 euros = 10 euros)
+                            $this->createWallet(1, 1, 15); // Création MCGCoin (pour 15 euros = 1 MCGCoin)
+                            $this->createWallet(2, 10, 10); // Création Euro (pour 10 euros = 10 euros)
                         }
                         else
                         {
@@ -161,17 +161,28 @@
         }
 
         // Méthode pour créer un wallet pour l'utilisateur
-        public function createWallet($idUser, $idCrypto, $amount, $balance) 
+        public function createWallet($idCrypto, $amount, $balance) 
         {
-            if ($GLOBALS["pdo"])
+            $selectLastId = "SELECT MAX(idUser) as max_id FROM account";
+            $selectResultId = $GLOBALS["pdo"] -> query($selectLastId);
+            
+            if ($selectResultId != false)
             {
-                $insertWallet = "INSERT INTO wallet (idUser, idCrypto, amount, balanceEUR) VALUES ('$idUser', '$idCrypto', '$amount', '$balance')";
+                $row = $selectResultId->fetch();
+                $idLastUser = $row['max_id'];
+                $insertWallet = "INSERT INTO wallet (idUser, idCrypto, amount, balanceEUR) VALUES ('$idLastUser', '$idCrypto', '$amount', '$balance')";
                 $insertWalletResult = $GLOBALS["pdo"] -> query($insertWallet);
+            
                 if ($insertWalletResult == false)
                 {
-                    // La création du wallet a échoué, on le signale dans le log
-                    error_log("Erreur lors de la création du wallet pour l'utilisateur $this->nom");
+                    error_reporting(E_ALL);
+                    ini_set("display_errors", 1);
                 }
+            }
+            else
+            {
+                error_reporting(E_ALL);
+                ini_set("display_errors", 1);
             }
         }
 
@@ -180,6 +191,15 @@
         {
             $idUserNotConv = implode('', $idUser);
             $idUserConvert = substr($idUserNotConv, 0, 1) . substr($idUserNotConv, 2);
+
+            if ($idUserConvert > 100)
+            {
+                $idUserConvert = substr($idUserNotConv, 0, 1) . substr($idUserNotConv, 3);
+            }
+            else if ($idUserConvert > 1000)
+            {
+                $idUserConvert = substr($idUserNotConv, 0, 3) . substr($idUserNotConv, 4);
+            }
 
             if ($GLOBALS["pdo"])
             {
@@ -246,6 +266,10 @@
                 if ($type == 1)
                 {
                     $selectAmountEuro = "SELECT wallet.balanceEUR FROM wallet WHERE wallet.idCrypto = '$idCrypto2' and wallet.idUser='$idUserConvert'";
+                }
+                else
+                {
+                    $selectAmountEuro = "SELECT wallet.balanceEUR FROM wallet WHERE wallet.idCrypto = '$idCryto1' and wallet.idUser='$idUserConvert'";
                 }
                 
                 $selectAmoutResult = $GLOBALS["pdo"] -> query($selectAmountEuro);
